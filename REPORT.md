@@ -37,9 +37,3 @@ As the harness developer, I am responsible for checking pair invariants, documen
 Before real deployment I would test more profiles and prompt forms; audit false refusals and demographic effects with appropriate safeguards; recalibrate the **40–45** review band *on blinded scores*; specify reviewer procedures; protect audit records from editing and unauthorized reading; and establish appeal, correction and incident-response paths. I would stop deployment if consent cannot be lawfully established, false refusals grow, reviewer capacity is insufficient, or the log cannot be trusted. The current notebook does not implement these operational controls.
 
 The deploying scholarship fund—not the model—must define eligibility criteria and the permitted purpose, appoint and train reviewers, communicate decisions and review options to applicants, and decide how to handle contested outcomes. I would provide evidence and recommend against turning off the refusal or review controls merely to improve throughput. If management overrode that advice, the risk and the decision should be documented and escalated through the institution's governance process, rather than silently changing the code.
-
-  documented limit, a stop condition)? What have you actually done in this lab, and what is left?
-- Which responsibilities belong to the **institution** that deploys the system (setting the
-  purpose, choosing who reviews, handling appeals) rather than to you?
-- Where do the two conflict? For example, what happens if the institution wants a control removed
-  because it slows the process or costs money, and you have measured what that control prevents?
