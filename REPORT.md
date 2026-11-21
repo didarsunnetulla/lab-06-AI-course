@@ -1,64 +1,43 @@
 # REPORT — what the measurement showed, who it affects, and whose responsibility it is
-<!-- STUDENT: replace -->
-
-Replace this whole template with your own text. Delete the line above (the `STUDENT: replace`
-marker) once you have, and delete these instructions and the guiding questions too. Keep the three
-numbered headings. Every number you quote must be one **your own notebook printed**, copied exactly,
-with the group it refers to (which attribute, how many pairs). Which dimension each section is
-graded against is in the README.
-
-The guiding questions are prompts, not a form: you do not have to answer each one in turn, and
-answering them without evidence from your run earns nothing.
 
 ## 1. Measurement read-out
 
-(Dimension: Evidence of Specific Impact.)
+I evaluated the supplied Qwen/Qwen2.5-3B-Instruct scholarship screening agent on **200 synthetic matched pairs**, **40 pairs per attribute**, or **400 applicant profiles**. Within each pair, academic merit and consent were identical. Only the name's language coding, gender coding, or fictional university changed. Two negative-control comparisons changed an individual name within the same language and gender group (`null_name`) or a university within the same tier (`null_university`). The bare agent shortlisted **356/400** profiles, rejected **44/400**, and produced **0/400 unparseable** replies.
 
-Guiding questions:
+| Comparison | Decision flips, 95% Wilson CI | Pairs with a score change | Mean absolute score gap, 95% bootstrap CI | Relevant floor |
+|---|---|---:|---|---|
+| Name language | **2/40 = 5.0%** [1.4%, 16.5%] | 11/40 | **3.12** [1.38, 5.25] | `null_name` |
+| Gender-coded name | **4/40 = 10.0%** [4.0%, 23.1%] | 6/40 | **1.12** [0.25, 2.13] | `null_name` |
+| University | **1/40 = 2.5%** [0.4%, 12.9%] | 10/40 | **2.50** [1.12, 4.12] | `null_university` |
+| `null_name` | **0/40 = 0.0%** [0.0%, 8.8%] | 7/40 | **2.00** [0.62, 3.62] | Name floor |
+| `null_university` | **1/40 = 2.5%** [0.4%, 12.9%] | 9/40 | **2.12** [0.88, 3.62] | University floor |
 
-- For each attribute (name language, gender-coded name, university): how many pairs, how many
-  flips, in which direction, and what was the typical score shift? Are these counts and magnitudes,
-  or a description of them?
-- Which attribute moved the decision, and by how much, **read against its own floor**? If a real
-  attribute's divergence is no larger than its floor's, what does that allow you to say, and
-  what does it not?
-- How much of the divergence could be noise? What do the two floors (`null_name` for the name
-  attributes, `null_university` for the university) test, and what do they leave untested (think about
-  what they change and what they keep fixed)? What would a stronger estimate require?
-- If nothing stands clear of its floor: what exactly can you say (counts, intervals), what could your
-  number of pairs have detected and not detected, and why is "no measured effect" not "no effect"?
-- Would the same attribute behave the same way with a different prompt wording, a different
-  model, or real applicants? Say what your run can and cannot support.
+**None of the three studied attributes stood clearly above its corresponding floor.** All three real-versus-floor flip-rate intervals overlapped; the absolute-score-gap intervals also overlapped with the relevant floor. For university, the flip count was exactly the same as its floor (**1/40**). For gender-coded name, the larger flip count (**4/40** compared with **0/40**) is a reason to examine the issue, not enough to claim a proven group effect (exact McNemar **p = 0.125** for the male–female direction). A mean *signed* score gap can hide opposite shifts; the absolute gap is also reported so these changes do not cancel.
+
+The direction table offers details, but not a causal explanation. The **male-coded** member was favoured in **0** gender-pair flips and the **female-coded** member in **4**; female-coded profiles were shortlisted **90.0%** of the time, compared with **80.0%** for male-coded profiles. Their signed score gap (male minus female) was **−0.4** [−1.2, +0.6]. For universities, the flagship member was favoured in **1** flip and the regional member in **0**; flagship profiles were shortlisted **92.5%** versus **90.0%** for regional profiles. The signed score gap (flagship minus regional) was **+2.5** [+1.1, +4.1], while the university *decision* flip rate did not exceed the university floor. For name language, Kazakh-language names were favoured in **2** oriented comparisons and the other language names in **0** (exact McNemar **p = 0.500**); the signed score gap (Kazakh versus the others) was **+0.7** [−1.8, +3.8]. The language groups' observed shortlist rates were **96.4%** (Kazakh), **92.3%** (Russian) and **96.2%** (English). These are descriptive rates within this small synthetic test, not population estimates.
+
+The detectability cell shows why caution matters. With **40 pairs** and the exact two-sided McNemar test at **0.05**, at least **6** discordant pairs in one direction and **0** in the other (15.0% of 40) are needed for significance; with **1** opposite-direction pair, at least **8** are needed (20.0%). Small effects may therefore escape detection. The floors capture changes to particular names and universities with identical prompt layout; they do not measure sensitivity to other prompt wording, line order, different models, different GPUs or real people. Greedy decoding removes sampling variation on a fixed configuration but not sensitivity to these irrelevant inputs. More pairs, pre-registered comparisons, and further prompt/model tests would be needed before making a firm fairness conclusion.
+
+After enabling the harness, all five pair categories had **0/40 flips** and **0.00** within-pair mean absolute score difference. This is **by construction**: the harness hides both `name` and `university`, so each matched pair is rendered as identical text. It does **not** prove the model learned fairness. The meaningful applicant-level comparison showed **46/400 changed outcomes**: **22 reject → escalate**, **12 shortlist → escalate**, **7 shortlist → reject**, and **5 reject → shortlist**. Scores changed for **166/400** profiles, with mean absolute change **14.01** among those changed. Removing fields also changes the input layout; these changes cannot prove that the model used a removed attribute.
+
+The harness's outcomes were **342 shortlist, 24 reject, 34 escalate, 0 refuse** in the clean measurement. Its **40–45** score band covered **64/400 (16.0%)** of the *unblinded baseline* scores, but the actual blinded run sent **34/400 (8.5%)** to human review. The thresholds did not transfer as planned. Both full runs used **400 model calls (1.00 per applicant)**. The bare run used **84,409 prompt tokens**, **11,122 new tokens**, and **578.6 seconds**; the harness run used **77,922 prompt tokens**, **11,088 new tokens**, and **465.7 seconds**. Those times are observations, not a promised speed gain. The separately exercised refusal test rejected processing of **5 of 6** requests, and the rule check found **0/400** wrong refusals on the clean measured profiles; this does not rule out false refusals on other inputs.
 
 ## 2. Who is affected
 
-(Dimension: Affected Parties and the Consequences They Bear.)
+A scholarship shortlist affects access to a limited opportunity. In the measured gender-name pairs, the four flips favoured female-coded names; if such a difference were shown to persist, an otherwise identical applicant with a male-coded name could lose a chance at review. In the university pairs, one flip favoured the flagship institution; an otherwise identical regional applicant might lose access. Conversely, a wrongly shortlisted applicant could occupy a place that another eligible applicant would have received. These are possible harms tied to observed flips, **not** proof that particular synthetic profiles were wronged or that the model exhibits a general discriminatory effect.
 
-Guiding questions:
+The harms are asymmetric. A wrongful rejection could mean lost scholarship funding, an application fee or preparation time, delayed study, or a rejection record later treated as authoritative. A wrongful shortlist may offer an undeserved advantage to the shortlisted person while disadvantaging a competing applicant. Even scores without changed binary decisions may influence a later ranking, so the observed score differences remain important. If scores or shortlists were reused in later funding rounds, errors could accumulate and look increasingly legitimate.
 
-- On each side of a **wrong** decision, who is it? Who is wrongly rejected, and who is wrongly
-  shortlisted (and therefore who is displaced from a limited number of places)? Tie each group
-  to a divergence you measured, not to a general statement that "some groups may be harmed".
-- What does each wrong decision cost the person it falls on (money, a place, time, a record
-  that follows them)? Is the cost the same for a wrongly rejected applicant and a wrongly shortlisted one?
-- Which parties does the brief not mention, but that are affected anyway (people who never
-  applied because they expected to be rejected; the staff who review escalated cases; the fund;
-  applicants from institutions the model has never seen)?
-- If you measured no divergence beyond the floors: who would bear the cost if there were one that your
-  sample could not detect? Tie that to what your number of pairs could and could not see.
-- Which consequences compound when the agent is used year after year, or when its output is
-  used as an input to the next stage (a later review, another fund, a published ranking)?
+Affected people also include non-applicants discouraged by anticipated unfairness, applicants from unfamiliar institutions, the **34** profiles sent to human reviewers in the harness run, staff who must review borderline decisions, and the fund that bears both the cost of review and the risk of wrongful exclusion. The measured **8.5%** review workload is not free: the fund must supply trained staff and an actual queue. The **0/400** false-refusal result on synthetic clean inputs is encouraging but not enough to promise that an unusual genuine name or programme will never be mistakenly blocked.
 
 ## 3. Professional responsibility
 
-(Dimension: Recognition of Professional Responsibility.)
+As the harness developer, I am responsible for checking pair invariants, documenting the pre/post comparison and its limits, validating types and ranges, ensuring unsafe purposes and unauthorized processing stop **before** a model call, and recording outcomes, refusals and escalations. The notebook provides evidence: the bare and harness measurements, a five-control `CONTROL_REGISTER`, a `decisions.jsonl` audit log, and a refusal test that triggered `purpose_not_allowed`, `minor`, `no_consent`, `invalid_input`, and `prompt_injection_detected`. My obligation is to report **no clear effect above the floors** rather than advertising zero post-blinding flips as proof of fairness.
 
-Guiding questions:
+Before real deployment I would test more profiles and prompt forms; audit false refusals and demographic effects with appropriate safeguards; recalibrate the **40–45** review band *on blinded scores*; specify reviewer procedures; protect audit records from editing and unauthorized reading; and establish appeal, correction and incident-response paths. I would stop deployment if consent cannot be lawfully established, false refusals grow, reviewer capacity is insufficient, or the log cannot be trusted. The current notebook does not implement these operational controls.
 
-- Given what you measured, what are **your** specific responsibilities as the developer of the
-  harness: what must you check before it runs, what must you tell the people who deploy it, what
-  must you not claim about it?
-- What would discharging each of those responsibilities require in practice (a test, a
+The deploying scholarship fund—not the model—must define eligibility criteria and the permitted purpose, appoint and train reviewers, communicate decisions and review options to applicants, and decide how to handle contested outcomes. I would provide evidence and recommend against turning off the refusal or review controls merely to improve throughput. If management overrode that advice, the risk and the decision should be documented and escalated through the institution's governance process, rather than silently changing the code.
+
   documented limit, a stop condition)? What have you actually done in this lab, and what is left?
 - Which responsibilities belong to the **institution** that deploys the system (setting the
   purpose, choosing who reviews, handling appeals) rather than to you?
