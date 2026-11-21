@@ -1,0 +1,52 @@
+{
+  "harness_controls": [
+    "validate_input",
+    "blind",
+    "refuse",
+    "log",
+    "escalate"
+  ],
+  "format_problems": [],
+  "entries": [
+    {
+      "control": "validate_input",
+      "principle": "Robustness, security and safety",
+      "principle_source": "OECD Recommendation on AI, OECD/LEGAL/0449, revised 2024, Principle 1.4. https://legalinstruments.oecd.org/en/instruments/OECD-LEGAL-0449",
+      "instrument": "Republic of Kazakhstan Law No. 230-VIII On Artificial Intelligence (17 November 2025). https://adilet.zan.kz/eng/docs/Z2500000230",
+      "provision": "Article 11 - Security and safety",
+      "why_here": "Input validation blocks impossible GPA, exam and other values before model use; Part 4 confirmed that invalid values were refused without a model call. The specific numeric limits are our engineering safeguards."
+    },
+    {
+      "control": "blind",
+      "principle": "Human-centred values and fairness",
+      "principle_source": "OECD Recommendation on AI, OECD/LEGAL/0449, revised 2024, Principle 1.2. https://legalinstruments.oecd.org/en/instruments/OECD-LEGAL-0449",
+      "instrument": "Republic of Kazakhstan Law No. 230-VIII On Artificial Intelligence (17 November 2025). https://adilet.zan.kz/eng/docs/Z2500000230",
+      "provision": "Article 6 - Fairness and equality",
+      "why_here": "Part 1 showed 2/40 name-language flips, 4/40 gender-coded-name flips and 1/40 university flip, although none clearly exceeded its own floor; hiding name and university limits irrelevant influence, but does not prove the model became fair."
+    },
+    {
+      "control": "refuse",
+      "principle": "Human-centred values, privacy and data protection",
+      "principle_source": "OECD Recommendation on AI, OECD/LEGAL/0449, revised 2024, Principle 1.2. https://legalinstruments.oecd.org/en/instruments/OECD-LEGAL-0449",
+      "instrument": "Republic of Kazakhstan Law No. 94-V On Personal Data and Their Protection (21 May 2013). https://adilet.zan.kz/eng/docs/Z1300000094",
+      "provision": "Article 7 - Conditions for personal data collection and processing, including consent and statutory exceptions",
+      "why_here": "The harness applies a conservative no-consent refusal policy; Part 4 refused five invalid or prohibited requests and falsely refused 0/400 measured clean profiles, while the additional prompt-injection rule is an engineering safety choice."
+    },
+    {
+      "control": "log",
+      "principle": "Accountability and transparency",
+      "principle_source": "OECD Recommendation on AI, OECD/LEGAL/0449, revised 2024, Principles 1.3 and 1.5. https://legalinstruments.oecd.org/en/instruments/OECD-LEGAL-0449",
+      "instrument": "Republic of Kazakhstan Law No. 230-VIII On Artificial Intelligence (17 November 2025). https://adilet.zan.kz/eng/docs/Z2500000230",
+      "provision": "Article 7 - Transparency and explainability",
+      "why_here": "The decision log records model outcomes, reason codes and fired controls so reviewers can examine the 46 changed outcomes, 34 escalations and tested refusals; one JSON record per call is our implementation choice, not a specific statutory log format."
+    },
+    {
+      "control": "escalate",
+      "principle": "Human-centred values and human determination",
+      "principle_source": "OECD Recommendation on AI, OECD/LEGAL/0449, revised 2024, Principle 1.2(b). https://legalinstruments.oecd.org/en/instruments/OECD-LEGAL-0449",
+      "instrument": "Republic of Kazakhstan Law No. 230-VIII On Artificial Intelligence (17 November 2025). https://adilet.zan.kz/eng/docs/Z2500000230",
+      "provision": "Article 8 - Responsibility and control by humans",
+      "why_here": "The 40-45 borderline band and additional merit-review rules sent 34/400 applicants (8.5%) to a person, compared with a planned baseline band share of 16%; human oversight reduces reliance on an uncertain automated decision but creates reviewer workload."
+    }
+  ]
+}
